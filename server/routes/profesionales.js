@@ -3,6 +3,7 @@ const express = require('express');
 let app = express();
 
 let Profesionales = require('../Models/profesionales');
+let Torneo = require('../Models/torneo');
 
 
 //==================
@@ -26,8 +27,9 @@ app.post('/profesionales', (req, res) => {
     });
 
 
-    profesionales.save((err, profesionalDB) => {
+    let id = body.torneo;
 
+    Torneo.findById(id, (err, torneo) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -35,28 +37,49 @@ app.post('/profesionales', (req, res) => {
             });
         }
 
-        if (!profesionalDB) {
-            return res.status(400).json({
+        if (!torneo) {
+            return res.status(500).json({
                 ok: false,
-                err
+                err: {
+                    message: 'El torneo no existe'
+                }
             });
         }
 
-        res.json({
-            ok: true,
-            profesionales: profesionalDB,
+
+        profesionales.save((err, profesionalDB) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            if (!profesionalDB) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            res.json({
+                ok: true,
+                profesionales: profesionalDB,
+
+            });
+
 
         });
 
-
-    });
+    }); //valido que el torneo exista
 
 
 });
 
 
 //==================
-// MOSTRAR Profesionales 
+// MOSTRAR Profesionales con sus torneos
 //==================
 app.get('/profesionales', (req, res) => {
 
