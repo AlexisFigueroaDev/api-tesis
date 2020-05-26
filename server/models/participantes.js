@@ -10,7 +10,8 @@ let participantesSchema = new Schema({
     fec_nac: { type: Date, required: [true, 'La fecha de nacimiento es obligatoria \' YYYY-MM-DD \''] },
     sexo_participante: { type: Boolean, default: true },
     profesionales: { type: Schema.Types.ObjectId, ref: 'Profesionales', required: [true, 'El id del profesional es requerido'] },
-    competicion: [{ type: Schema.Types.ObjectId, ref: 'Competicion' }]
+    competicion: [{ type: Schema.Types.ObjectId, ref: 'Competicion' }],
+    total: { type: Number, default: 0 }
 });
 
 

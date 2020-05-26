@@ -26,7 +26,8 @@ let competicionSchema = new Schema({
     divisional: { type: String, enum: divisionalesValidas, required: [true, 'El nombre de la divisional es obligatorio'] },
     categoria: { type: String, enum: categoriasValidas, required: [true, 'El nombre de la categoria es obligatorio'] },
     subCategoria: { type: String, enum: subcategoriasValidas, default: 'EDAD' },
-    participante: { type: Schema.Types.ObjectId, ref: 'Participante', required: [true, 'el id del participante es obligatorio'] }
+    participante: { type: Schema.Types.ObjectId, ref: 'Participante', required: [true, 'el id del participante es obligatorio'] },
+    precio: { type: Number, required: [true, 'El precio es requerido'] }
 });
 
 
