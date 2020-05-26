@@ -14,7 +14,8 @@ let profesionalesSchema = new Schema({
     apellido_delegado: { type: String, default: 'VACIO' },
     DNI_delegado: { type: Number, default: 99999999 },
     tel_delegado: { type: Number, default: 99999999 },
-    torneo: { type: Schema.Types.ObjectId, ref: 'Torneo', required: [true, 'el id del torneo es obligatorio'] }
+    torneo: { type: Schema.Types.ObjectId, ref: 'Torneo', required: [true, 'el id del torneo es obligatorio'] },
+    total: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Profesionales', profesionalesSchema);
