@@ -262,8 +262,12 @@ app.post('/competicion', (req, res) => {
 
                                     //==================
                                     // Acumulo el monto a pagar total por participante
+                                    // 
                                     //==================
                                     // Participantes.findByIdAndUpdate({_id: idParticipante},{total : {}})
+
+
+
 
                                 }); //Busco cuantas competiciones tiene y guardo sus monto a pagar
 
