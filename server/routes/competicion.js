@@ -4,6 +4,7 @@ let app = express();
 
 let Competicion = require('../Models/Competicion');
 let Participantes = require('../Models/participantes');
+let Profesionales = require('../Models/profesionales');
 let Precio = require('../Models/precios');
 
 
@@ -26,18 +27,40 @@ app.post('/competicion', (req, res) => {
     // FUNCION PARA VALIDAR REGLAS DE NEGOCIO
     //==================
 
+    if (subCategoria === undefined) {
+        subCategoria = 'EDAD'
+    }
+
+
     function validacion(valida) {
         if (especialidad === 'ESCUELA') {
             if (divisional === 'C' || divisional === 'B' || divisional === 'A') {
 
                 if (divisional === 'C') {
-                    if (categoria === 'FORMATICA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
-                        return valida = 1;
+                    if (categoria === 'FORMATIVA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+
+                            if (subCategoria === 'EDAD') {
+
+                                return valida = 1;
+
+                            }
+
+                        }
+
                     }
                 }
                 if (divisional === 'B') {
                     if (categoria === 'PROMOCIONAL' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
-                        return valida = 1;
+
+                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+                            if (subCategoria === 'EDAD') {
+
+                                return valida = 1;
+
+                            }
+                        }
                     }
                 }
                 if (divisional === 'A') {
@@ -61,14 +84,73 @@ app.post('/competicion', (req, res) => {
         }
         if (especialidad === 'LIBRE') {
             if (divisional === 'C' || divisional === 'B' || divisional === 'A' || divisional === 'D') {
-                return valida = 2
+
+                if (divisional === 'C') {
+                    if (categoria === 'FORMATIVA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+
+                            if (subCategoria === 'EDAD') {
+
+                                return valida = 2;
+
+                            }
+
+                        }
+
+                    }
+                }
+                if (divisional === 'B') {
+                    if (categoria === 'PROMOCIONAL' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+                            if (subCategoria === 'EDAD') {
+
+                                return valida = 2;
+
+                            }
+                        }
+                    }
+                }
+                if (divisional === 'A') {
+                    if (categoria === 'NACIONAL' || categoria === 'NACIONAL-ELITE') {
+
+                        //'TOTS', 'PRE-MINI', 'MINI-INFANTIL', 'INFANTIL', 'CADETE', 'JUVENIL', 'JUNIOR', 'SENIOR', 'EDAD'
+                        if (categoria === 'NACIONAL') {
+                            if (subCategoria === 'TOTS' || subCategoria === 'PRE-MINI' || subCategoria === 'MINI-INFANTIL' || subCategoria === 'INFANTIL' || subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                                return valida = 2;
+                            }
+                        }
+                        if (categoria === 'NACIONAL-ELITE') {
+
+                            if (subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                                return valida = 2;
+                            }
+                        }
+                    }
+                }
+
+                if (divisional === 'D') {
+
+                    if (categoria === 'INICIACION' || categoria === 'AVANZADO') {
+
+                        if (subCategoria === 'EDAD') {
+
+                            return valida = 2;
+
+                        }
+
+                    }
+
+                }
+
             }
         }
         return valida;
     } //fin de funcion validacion
 
     valida = validacion(valida);
-    console.log(`Resultado de la funcion validacion: ${validacion(valida)}`);
+    console.log(`Resultado de la funcion validacion: ${valida}`);
 
     //==================
     // FUNCION PARA CARGAR EL PRECIO DEPENDIENDO LA ESPECIALIDAD
@@ -260,10 +342,80 @@ app.post('/competicion', (req, res) => {
 
                                     console.log(`Total a pagar por Participante: ${total}`);
 
+                                    console.log(`Precio de la competencia ${monto}`);
+
                                     //==================
                                     // Acumulo el monto a pagar total por participante
                                     //==================
-                                    // Participantes.findByIdAndUpdate({_id: idParticipante},{total : {}})
+                                    Participantes.findByIdAndUpdate({ _id: idParticipante }, { $set: { total: `${total}` } }, (err, participantesDB) => {
+
+                                        if (err) {
+                                            console.log(err)
+                                        }
+
+                                        if (!participantesDB) {
+                                            return res.status(400).json({
+                                                ok: false,
+                                                message: 'EL participante no existe no se puede cargar el monto'
+                                            });
+                                        }
+
+                                        console.log(`Se actualizo el participante id ${idParticipante} con el monto a pagar de ${total}`);
+
+
+                                    }); //Acumulo el monto a pagar total por participante
+
+
+                                    //==================
+                                    // Agrego el monto total al profesional sumado a lo monto que tiene 
+                                    //==================
+
+                                    let Idprofesional = participanteDB.profesionales;
+
+                                    console.log('Profesional: ' + Idprofesional);
+
+                                    Profesionales.findById(`${Idprofesional}`).exec((err, profesional) => {
+                                        if (err) {
+                                            return res.status(500).json({
+                                                ok: false,
+                                                err
+                                            });
+                                        }
+
+                                        if (!participante) {
+                                            return res.status(500).json({
+                                                ok: false,
+                                                err: {
+                                                    message: 'El participante no existe'
+                                                }
+                                            });
+                                        }
+
+                                        console.log('Total a pagar Profesional: ' + profesional.total + ' Con el ID: ' + Idprofesional);
+
+                                        let totalProfesional = profesional.total + monto;
+
+                                        Profesionales.findByIdAndUpdate({ _id: Idprofesional }, { $set: { total: `${totalProfesional}` } }, (err, profesionalesDB) => {
+                                            if (err) {
+                                                console.log(err)
+                                            }
+
+                                            if (!profesionalesDB) {
+                                                return res.status(400).json({
+                                                    ok: false,
+                                                    message: 'El profesional no existe no se puede cargar el monto'
+                                                });
+                                            }
+
+                                            console.log(`Se actualizo el profesional id ${Idprofesional} con el monto a pagar de ${totalProfesional}`);
+                                        }); //Fin findByIdAndUpdate Profesionales
+
+                                    }); //Fin FIND Profesionales
+
+                                    // Participantes.find({profesionales : })
+
+
+
 
                                 }); //Busco cuantas competiciones tiene y guardo sus monto a pagar
 
@@ -305,6 +457,5 @@ function calculoEdad(dia, mes, año) {
 
     return edad;
 };
-
 
 module.exports = app;
