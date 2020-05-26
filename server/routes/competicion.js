@@ -262,9 +262,26 @@ app.post('/competicion', (req, res) => {
 
                                     //==================
                                     // Acumulo el monto a pagar total por participante
-                                    // 
                                     //==================
-                                    // Participantes.findByIdAndUpdate({_id: idParticipante},{total : {}})
+                                    Participantes.findByIdAndUpdate({ _id: idParticipante }, { $set: { total: `${total}` } }, (err, participantesDB) => {
+
+                                        if (err) {
+                                            console.log(err)
+                                        }
+
+                                        if (!participantesDB) {
+                                            return res.status(400).json({
+                                                ok: false,
+                                                message: 'EL participante no existe no se puede cargar el monto'
+                                            });
+                                        }
+
+                                        console.log(`Se actualizo el participante id ${idParticipante} con el monto a pagar de ${total}`);
+
+
+                                    }); //Acumulo el monto a pagar total por participante
+
+
 
 
 
