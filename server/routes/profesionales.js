@@ -3,6 +3,7 @@ const express = require('express');
 let app = express();
 
 let Profesionales = require('../Models/profesionales');
+let Participante = require('../Models/participantes');
 let Torneo = require('../Models/torneo');
 
 
@@ -23,7 +24,8 @@ app.post('/profesionales', (req, res) => {
         apellido_delegado: body.apellido_delegado,
         DNI_delegado: body.DNI_delegado,
         tel_delegado: body.tel_delegado,
-        torneo: body.torneo
+        torneo: body.torneo,
+        total: body.total
     });
 
 
@@ -94,13 +96,21 @@ app.get('/profesionales', (req, res) => {
                 });
             }
 
+            if (!profesionales) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
+            }
+
             res.json({
                 ok: true,
                 profesionales
-            })
-        })
+            });
 
-});
+        }); //FIN funcion Find Profesionales
+
+}); // FIN MOSTRAR Profesionales con sus torneos
 
 
 

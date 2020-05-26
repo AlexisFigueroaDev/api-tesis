@@ -66,10 +66,12 @@ app.post('/precios', (req, res) => {
 //==================
 // buscar precio de una especialidad
 //==================
-app.get('/busco', (req, res) => {
-
+app.get('/precios/:id', (req, res) => {
+    let id = req.params.id;
     let resultado;
-    Precios.findOne({ descripcion: 'LIBRE' })
+
+    let variable = id.toUpperCase();
+    Precios.findOne({ descripcion: variable })
         .exec((err, precioDB) => {
             if (err) {
                 return res.status(500).json({
