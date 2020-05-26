@@ -84,14 +84,73 @@ app.post('/competicion', (req, res) => {
         }
         if (especialidad === 'LIBRE') {
             if (divisional === 'C' || divisional === 'B' || divisional === 'A' || divisional === 'D') {
-                return valida = 2
+
+                if (divisional === 'C') {
+                    if (categoria === 'FORMATIVA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+
+                            if (subCategoria === 'EDAD') {
+
+                                return valida = 2;
+
+                            }
+
+                        }
+
+                    }
+                }
+                if (divisional === 'B') {
+                    if (categoria === 'PROMOCIONAL' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+                            if (subCategoria === 'EDAD') {
+
+                                return valida = 2;
+
+                            }
+                        }
+                    }
+                }
+                if (divisional === 'A') {
+                    if (categoria === 'NACIONAL' || categoria === 'NACIONAL-ELITE') {
+
+                        //'TOTS', 'PRE-MINI', 'MINI-INFANTIL', 'INFANTIL', 'CADETE', 'JUVENIL', 'JUNIOR', 'SENIOR', 'EDAD'
+                        if (categoria === 'NACIONAL') {
+                            if (subCategoria === 'TOTS' || subCategoria === 'PRE-MINI' || subCategoria === 'MINI-INFANTIL' || subCategoria === 'INFANTIL' || subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                                return valida = 2;
+                            }
+                        }
+                        if (categoria === 'NACIONAL-ELITE') {
+
+                            if (subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                                return valida = 2;
+                            }
+                        }
+                    }
+                }
+
+                if (divisional === 'D') {
+
+                    if (categoria === 'INICIACION' || categoria === 'AVANZADO') {
+
+                        if (subCategoria === 'EDAD') {
+
+                            return valida = 2;
+
+                        }
+
+                    }
+
+                }
+
             }
         }
         return valida;
     } //fin de funcion validacion
 
     valida = validacion(valida);
-    console.log(`Resultado de la funcion validacion: ${validacion(valida)}`);
+    console.log(`Resultado de la funcion validacion: ${valida}`);
 
     //==================
     // FUNCION PARA CARGAR EL PRECIO DEPENDIENDO LA ESPECIALIDAD

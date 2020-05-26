@@ -71,7 +71,6 @@ app.get('/precios/:id', (req, res) => {
     let resultado;
 
     let variable = id.toUpperCase();
-    console.log(variable);
     Precios.findOne({ descripcion: variable })
         .exec((err, precioDB) => {
             if (err) {
