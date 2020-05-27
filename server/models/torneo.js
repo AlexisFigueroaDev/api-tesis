@@ -20,7 +20,8 @@ let torneoSchema = new Schema({
     estado: {
         type: Boolean,
         default: true
-    }
+    },
+    total: { type: Number, default: 0 }
 });
 
 
