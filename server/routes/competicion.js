@@ -412,11 +412,6 @@ app.post('/competicion', (req, res) => {
 
                                     }); //Fin FIND Profesionales
 
-                                    // Participantes.find({profesionales : })
-
-
-
-
                                 }); //Busco cuantas competiciones tiene y guardo sus monto a pagar
 
                             }); //findOne participante la edad
