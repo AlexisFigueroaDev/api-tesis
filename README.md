@@ -25,3 +25,7 @@ _Directorios_
 ## Funcionalidades 
 
 > La logica con las reglas de negrocio se muestran en Routes>>Competicion.js
+> Carga de Importes
+    * Recaudacion de TORNEO 
+    * Monto total por CLUB o PROFESIONAL
+    * Monto total por PARTICIPANTE
