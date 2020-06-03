@@ -6,6 +6,7 @@ let Competicion = require('../Models/Competicion');
 let Participantes = require('../Models/participantes');
 let Profesionales = require('../Models/profesionales');
 let Precio = require('../Models/precios');
+let Torneo = require('../Models/torneo');
 
 
 //====================================
@@ -382,11 +383,11 @@ app.post('/competicion', (req, res) => {
                                             });
                                         }
 
-                                        if (!participante) {
+                                        if (!profesional) {
                                             return res.status(500).json({
                                                 ok: false,
                                                 err: {
-                                                    message: 'El participante no existe'
+                                                    message: 'El profesional no existe'
                                                 }
                                             });
                                         }
@@ -412,6 +413,70 @@ app.post('/competicion', (req, res) => {
 
                                     }); //Fin FIND Profesionales
 
+
+                                    //==================
+                                    // Agrego el monto total al total sumado a lo monto que tiene por cada profesional
+                                    //==================
+
+                                    console.log('-------------------------------------------');
+                                    console.log('ID PROFESIONAL A BUSCAR: ' + Idprofesional);
+                                    console.log('-------------------------------------------');
+                                    Profesionales.find({ _id: Idprofesional }).exec((err, profesionalDB) => {
+                                        if (err) {
+                                            console.log(err);
+                                        }
+                                        if (!profesionalDB) {
+                                            return res.status(400).json({
+                                                ok: false,
+                                                message: 'El profesional no existe no se puede cargar monto'
+                                            })
+                                        }
+
+                                        let idTorneo = profesionalDB[0].torneo;
+                                        console.log('************************************************');
+                                        console.log(`El id del torneo del profesional es: ${idTorneo}`);
+                                        console.log('************************************************');
+
+
+
+
+                                        Torneo.findById(idTorneo).exec((err, torneoDB) => {
+
+                                            if (err) {
+                                                console.log(err)
+                                            }
+
+                                            if (!torneoDB) {
+                                                return console.log('El Toreno no existe');
+                                            }
+
+                                            let MontoTorneo = torneoDB.total;
+
+                                            console.log(MontoTorneo);
+
+
+                                            let cargaTorneo = MontoTorneo + monto
+
+                                            console.log('Carga para actualizar el torneo ' + cargaTorneo);
+
+
+
+                                            Torneo.findByIdAndUpdate({ _id: idTorneo }, { $set: { total: `${cargaTorneo}` } }, (err, torneoDB) => {
+                                                if (err) {
+                                                    console.log(err)
+                                                }
+
+                                                if (!torneoDB) {
+                                                    return console.log('El Toreno no existe');
+                                                }
+
+                                                console.log(`Se actualizo el torneo id ${idTorneo} con el monto recadudado de ${cargaTorneo}`);
+                                            }); //Torneo.findByIdAndUpdate
+
+                                        }); //Torneo.findById
+
+                                    }); //Profesionales.find
+
                                 }); //Busco cuantas competiciones tiene y guardo sus monto a pagar
 
                             }); //findOne participante la edad
@@ -427,12 +492,8 @@ app.post('/competicion', (req, res) => {
                     message: 'La asignacion de la competicion no corresponde a las reglas de negocio'
 
                 });
-
-
             };
-
         });
-
 });
 
 function calculoEdad(dia, mes, año) {

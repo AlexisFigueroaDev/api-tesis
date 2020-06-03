@@ -3,6 +3,7 @@ const express = require('express');
 let app = express();
 
 let Torneo = require('../Models/torneo');
+let Profesional = require('../Models/profesionales');
 
 const _ = require('underscore');
 
@@ -27,7 +28,8 @@ app.get('/torneo', (req, res) => {
                 ok: true,
                 torneo
             })
-        })
+        });
+
 
 });
 
@@ -40,7 +42,8 @@ app.post('/torneo', (req, res) => {
     let torneo = new Torneo({
         descripcion: body.descripcion,
         fecha: body.fecha,
-        estado: body.estado
+        estado: body.estado,
+        total: body.total
     });
 
 
@@ -68,6 +71,37 @@ app.post('/torneo', (req, res) => {
 
 
     });
+
+
+});
+
+
+//==================
+// MOSTRAR TORNEOS X ID
+//==================
+app.get('/torneo/:id', (req, res) => {
+
+    let id = req.params.id;
+
+    Torneo.findById(id)
+        .populate('Profesionales', 'club')
+        .sort('descripcion')
+        .exec((err, torneo) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            res.json({
+                ok: true,
+                torneo
+            });
+
+        }); //Torneo.findById(id)
+
+
 
 
 });
