@@ -25,3 +25,9 @@ if (process.env.NODE_ENV === 'desa') {
 }
 
 process.env.URLDB = urlDB;
+
+
+// =====================
+// Vencimiento del Token
+//======================
+process.env.CADUCIDAD_TOKEN = '48h';
