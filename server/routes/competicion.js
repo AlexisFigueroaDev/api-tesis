@@ -7,12 +7,13 @@ let Participantes = require('../Models/participantes');
 let Profesionales = require('../Models/profesionales');
 let Precio = require('../Models/precios');
 let Torneo = require('../Models/torneo');
+let { verificaToken, verificaAdminRol } = require('../middlewares/autenticacion');
 
 
 //====================================
 //Crear nueva competicion al participante
 //====================================
-app.post('/competicion', (req, res) => {
+app.post('/competicion', verificaToken, (req, res) => {
     let body = req.body;
 
     let id = body.participante;

@@ -14,7 +14,7 @@ const app = express();
 //==================
 // Agregar nuevo usuario
 //==================
-app.post('/usuario', [verificaToken, verificaAdminRol], function(req, res) {
+app.post('/usuario', function(req, res) {
 
     let body = req.body;
 
@@ -52,7 +52,7 @@ app.post('/usuario', [verificaToken, verificaAdminRol], function(req, res) {
 // Consulto usuarios
 //==================
 
-app.get('/usuario', verificaToken, (req, res) => {
+app.get('/usuario', [verificaToken, verificaAdminRol], (req, res) => {
 
 
     // return res.json({

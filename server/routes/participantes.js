@@ -4,12 +4,12 @@ let app = express();
 
 let Participantes = require('../Models/participantes');
 let Profesional = require('../Models/profesionales');
-
+let { verificaToken, verificaAdminRol } = require('../middlewares/autenticacion');
 
 //====================================
 // Crear nuevo Participantes
 //====================================
-app.post('/participantes', (req, res) => {
+app.post('/participantes', verificaToken, (req, res) => {
     let body = req.body;
 
     let participantes = new Participantes({
@@ -78,7 +78,7 @@ app.post('/participantes', (req, res) => {
 //========================================================================
 // Mostrar los participantes con sus profesionales y torneo inscripto
 //========================================================================
-app.get('/participantes', (req, res) => {
+app.get('/participantes', [verificaToken, verificaAdminRol], (req, res) => {
 
     Participantes.find({})
         .populate({

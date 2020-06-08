@@ -30,7 +30,7 @@ process.env.URLDB = urlDB;
 // =====================
 // Vencimiento del Token
 //======================
-process.env.CADUCIDAD_TOKEN = '48h';
+process.env.CADUCIDAD_TOKEN = '2h';
 
 // =====================
 // SEED de autenticacion
