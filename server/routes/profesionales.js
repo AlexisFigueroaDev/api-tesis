@@ -4,6 +4,7 @@ let app = express();
 let { verificaToken, verificaAdminRol } = require('../middlewares/autenticacion');
 let Profesionales = require('../Models/profesionales');
 let Participante = require('../Models/participantes');
+let Competicion = require('../Models/Competicion');
 let Torneo = require('../Models/torneo');
 
 
@@ -297,7 +298,178 @@ app.put('/profesional/:id', verificaToken, (req, res) => {
 
 
 
-})
+});
+
+
+//==================
+// Borrar profesionales por Id
+//==================
+
+app.delete('/profesional/:id', [verificaToken, verificaAdminRol], (req, res) => {
+
+
+    let id = req.params.id;
+
+    //==================
+    // Busco los patinadores que tienen ese mismo id del profesional
+    //==================
+
+    Participante.find().where({ profesionales: id }).exec((err, participanteDB) => {
+        if (err) {
+            return console.log(err);
+        }
+
+        if (!participanteDB) {
+            return console.log('El participante no existe');
+        }
+
+        let arrayPart = [];
+        let valorPart = '';
+
+        tamañoPart = participanteDB.length;
+
+        for (let i = 0; i < tamañoPart; i++) {
+
+            valorPart = participanteDB[i]._id
+
+            arrayPart.push(valorPart);
+        }
+
+        console.log(`arrayPart (PARTICIPANTES PARA BORRAR): ${arrayPart}`);
+
+        //BORRAR PARTICIPANTES
+        Participante.remove({ "_id": { $in: arrayPart } }, (err, participantesDB) => {
+            if (err) {
+                return console.log(err);
+            }
+
+            if (!participantesDB) {
+                return console.log('No se pudo borrar de forma correcta');
+            }
+
+            console.log(`Se borraron de forma correcta los id ${arrayPart}`);
+        });
+
+
+        //==================
+        // Busco las competiciones que tienen asociados los participantes
+        //==================
+        Competicion.find().where({ participante: arrayPart }).exec((err, competicionDB) => {
+            if (err) {
+                return console.log(err);
+            }
+
+            if (!competicionDB) {
+                return console.log('La competicion no existe');
+            }
+
+            let arrayComp = [];
+            let valorComp = '';
+
+            tamañoComp = competicionDB.length;
+
+            for (let i = 0; i < tamañoComp; i++) {
+
+                valorComp = competicionDB[i]._id
+
+                arrayComp.push(valorComp);
+            }
+
+            console.log(`valorComp (COMPETICION PARA BORRAR) ${arrayComp}`);
+
+
+            //BORRAR COMPETICIONES
+            Competicion.remove({ "_id": { $in: arrayComp } }, (err, competicionDB) => {
+                if (err) {
+                    return console.log(err);
+                }
+
+                if (!competicionDB) {
+                    return console.log('No se pudo borrar de forma correcta');
+                }
+
+                console.log(`Se borraron de forma correcta los id ${arrayComp}`);
+            });
+
+
+            //==================
+            // Busco el monto asignado del profesional del total a pagar
+            //==================
+
+            Profesionales.findById(id, (err, profesionalDB) => {
+                if (err) {
+                    return console.log(err);
+                }
+
+                let montoPro = profesionalDB.total;
+
+                let idTorneo = profesionalDB.torneo;
+
+                console.log(`montoPro (MONTO TOTAL DEL PROFESIONAL ACUMULADO) ${montoPro}`);
+                console.log(`idTorneo (ID TORNEO DEL PROFESIONAL) ${idTorneo}`);
+
+                //BORRAR PROFESIONALES
+                Profesionales.remove({ "_id": id }, (err, competicionDB) => {
+                    if (err) {
+                        return console.log(err);
+                    }
+
+                    if (!competicionDB) {
+                        return console.log('No se pudo borrar de forma correcta');
+                    }
+
+                    console.log(`Se borraron de forma correcta el profesional ${id}`);
+                });
+
+                //==================
+                // actualizo el monto del torneo 
+                //==================
+
+                Torneo.findById(idTorneo, (err, torneoDB) => {
+                    if (err) {
+                        return console.log(err);
+                    }
+
+                    let montoTorneo = torneoDB.total;
+
+                    console.log(`montoTorneo (MONTO TOTAL DEL TORNEO) ${montoTorneo}`);
+
+                    let updateTorneo = montoTorneo - montoPro
+
+
+                    Torneo.update({ _id: idTorneo }, { total: updateTorneo }, (err, torneoDB) => {
+                        if (err) {
+                            return res.status(500).json({
+                                ok: false,
+                                err
+                            });
+                        }
+
+                        if (!torneoDB) {
+                            return res.status(400).json({
+                                ok: false,
+                                err
+                            });
+                        }
+
+                        console.log(`TORNEO ${ torneoDB._id} acutalizado con el monto ${updateTorneo}`);
+
+                        res.json({
+                            ok: true,
+                            message: 'Profesional Borrado'
+                        })
+
+                    }); //Torneo.update
+
+                }); //Torneo.findById
+
+            }); //Profesionales.findById
+
+        }); //Competicion.find()
+
+    }); //Participante.find()
+
+});
 
 
 
