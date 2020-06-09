@@ -497,6 +497,135 @@ app.post('/competicion', verificaToken, (req, res) => {
         });
 });
 
+//======================
+// Modificar Competicion
+//======================
+
+app.put('/competicion/:id', (req, res) => {
+
+    /*
+        especialidad
+        divisional
+        categoria
+        subCategoria
+        participante
+    */
+
+    let id = req.params.id;
+    let body = req.body;
+
+    Competicion.findById(id).exec((err, competicionDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                message: err
+            });
+        }
+
+        if (!participantesDB) {
+            return res.status(400).json({
+                ok: false,
+                message: 'la competicion no existe'
+            });
+        }
+
+        update = {
+            divisional: body.divisional,
+            categoria: body.categoria,
+            subCategoria: body.subCategoria
+        }
+
+        let divisional = competicionDB.divisional;
+        let categoria = competicionDB.categoria;
+        let subCategoria = competicionDB.subCategoria;
+
+
+        let divisional_mod = '';
+        let categoria_mod = '';
+        let subCategoria_mod = '';
+
+
+
+        if (divisional !== update.divisional) {
+            divisional_mod = update.divisional
+        }
+
+        if (update.especialidad === undefined) {
+            divisional_mod = especialidad
+        };
+
+        if (categoria !== update.categoria) {
+            categoria_mod = update.categoria
+        }
+
+        if (update.categoria === undefined) {
+            categoria_mod = categoria
+        };
+
+        if (subCategoria !== update.subCategoria) {
+            subCategoria_mod = update.subCategoria
+        }
+
+        if (update.subCategoria === undefined) {
+            subCategoria_mod = subCategoria
+        };
+
+
+        console.log(divisional_mod);
+        console.log(categoria_mod);
+        console.log(subCategoria_mod);
+
+        insert = {
+            divisional: divisional_mod,
+            categoria: categoria_mod,
+            subCategoria: subCategoria_mod,
+        }
+
+
+        Competicion.findByIdAndUpdate(id, insert, (err, competicionDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            if (!competicionDB) {
+                return res.status(400).json({
+                    ok: false,
+                    message: 'El participante no existe'
+                });
+            }
+
+            Competicion.findById(id).exec((err, competicionDB) => {
+
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        err
+                    });
+                }
+
+                res.json({
+                    ok: true,
+                    competicion: competicionDB
+                });
+
+            }); //Competicion.findById
+
+        }); //Competicion.findByIdAndUpdate
+
+
+    }); //Competicion.findById(id) Busco si la competicion existe
+});
+
+
+//==================
+// Eliminar Competicion
+//==================
+
+
+
 function calculoEdad(dia, mes, año) {
     let edad = 0;
 
