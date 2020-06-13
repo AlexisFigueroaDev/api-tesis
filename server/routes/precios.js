@@ -3,11 +3,12 @@ const express = require('express');
 let app = express();
 
 let Precios = require('../Models/precios');
+let { verificaToken, verificaAdminRol } = require('../middlewares/autenticacion');
 
 //==================
 // MOSTRAR PRECIOS
 //==================
-app.get('/precios', (req, res) => {
+app.get('/precios', verificaToken, (req, res) => {
 
     Precios.find({})
         .sort('descripcion')
@@ -30,7 +31,7 @@ app.get('/precios', (req, res) => {
 //==================
 // Crear nuevo precio 
 //==================
-app.post('/precios', (req, res) => {
+app.post('/precios', [verificaToken, verificaAdminRol], (req, res) => {
     let body = req.body;
 
     let precio = new Precios({
@@ -66,7 +67,7 @@ app.post('/precios', (req, res) => {
 //==================
 // buscar precio de una especialidad
 //==================
-app.get('/precios/:id', (req, res) => {
+app.get('/precios/:id', verificaToken, (req, res) => {
     let id = req.params.id;
     let resultado;
 
@@ -92,6 +93,46 @@ app.get('/precios/:id', (req, res) => {
                 precio: precioDB,
             });
         });
+
+});
+
+
+//==================
+// Modificar Precio
+//==================
+
+
+app.put('/precio/:id', [verificaToken, verificaAdminRol], (req, res) => {
+
+    let id = req.params.id;
+    let body = req.body;
+
+
+    let insert = {
+        precio: body.Precios
+    }
+
+    Precios.findByIdAndUpdate(id, insert, (err, precioDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!precioDB) {
+            return res.status(400).json({
+                ok: false,
+                message: 'El precio no existe'
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: 'Solo se actualiza el precio las competeniciones cargadas no son modificadas',
+            precio: precioDB
+        });
+    });
 
 });
 

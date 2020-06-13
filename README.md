@@ -32,3 +32,19 @@ _Directorios_
     * Recaudacion de TORNEO 
     * Monto total por CLUB o PROFESIONAL
     * Monto total por PARTICIPANTE
+
+
+2. ABM 
+    * Competicion
+    * Participantes
+    * Profesionales
+    * Torneo 
+    * Precio sin tener posibilidad de borrar
+
+3. Login 
+    * Login Normal
+    * Login Google
+
+4. Archivo de Seguridad
+    * Validacion de Token 
+    * Validacion de Token con ROL ADMIN
