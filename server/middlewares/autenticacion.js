@@ -51,3 +51,8 @@ let verificaAdminRol = (req, res, next) => {
     }
 
 }
+
+module.exports = {
+    verificaToken,
+    verificaAdminRol
+}

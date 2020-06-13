@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
-
 let participantesSchema = new Schema({
     nombre_participante: { type: String, required: [true, 'El nombre es requerido'] },
     apellido_participante: { type: String, required: [true, 'El apellido es requerido'] },
@@ -13,8 +11,5 @@ let participantesSchema = new Schema({
     competicion: [{ type: Schema.Types.ObjectId, ref: 'Competicion' }],
     total: { type: Number, default: 0 }
 });
-
-
-
 
 module.exports = mongoose.model('Participantes', participantesSchema);

@@ -7,12 +7,13 @@ let Participantes = require('../Models/participantes');
 let Profesionales = require('../Models/profesionales');
 let Precio = require('../Models/precios');
 let Torneo = require('../Models/torneo');
+let { verificaToken, verificaAdminRol } = require('../middlewares/autenticacion');
 
 
 //====================================
 //Crear nueva competicion al participante
 //====================================
-app.post('/competicion', (req, res) => {
+app.post('/competicion', verificaToken, (req, res) => {
     let body = req.body;
 
     let id = body.participante;
@@ -31,124 +32,6 @@ app.post('/competicion', (req, res) => {
     if (subCategoria === undefined) {
         subCategoria = 'EDAD'
     }
-
-
-    function validacion(valida) {
-        if (especialidad === 'ESCUELA') {
-            if (divisional === 'C' || divisional === 'B' || divisional === 'A') {
-
-                if (divisional === 'C') {
-                    if (categoria === 'FORMATIVA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
-
-                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
-
-                            if (subCategoria === 'EDAD') {
-
-                                return valida = 1;
-
-                            }
-
-                        }
-
-                    }
-                }
-                if (divisional === 'B') {
-                    if (categoria === 'PROMOCIONAL' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
-
-                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
-                            if (subCategoria === 'EDAD') {
-
-                                return valida = 1;
-
-                            }
-                        }
-                    }
-                }
-                if (divisional === 'A') {
-                    if (categoria === 'NACIONAL' || categoria === 'NACIONAL-ELITE') {
-
-                        //'TOTS', 'PRE-MINI', 'MINI-INFANTIL', 'INFANTIL', 'CADETE', 'JUVENIL', 'JUNIOR', 'SENIOR', 'EDAD'
-                        if (categoria === 'NACIONAL') {
-                            if (subCategoria === 'TOTS' || subCategoria === 'PRE-MINI' || subCategoria === 'MINI-INFANTIL' || subCategoria === 'INFANTIL' || subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
-                                return valida = 1;
-                            }
-                        }
-                        if (categoria === 'NACIONAL-ELITE') {
-
-                            if (subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
-                                return valida = 1;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (especialidad === 'LIBRE') {
-            if (divisional === 'C' || divisional === 'B' || divisional === 'A' || divisional === 'D') {
-
-                if (divisional === 'C') {
-                    if (categoria === 'FORMATIVA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
-
-                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
-
-                            if (subCategoria === 'EDAD') {
-
-                                return valida = 2;
-
-                            }
-
-                        }
-
-                    }
-                }
-                if (divisional === 'B') {
-                    if (categoria === 'PROMOCIONAL' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
-
-                        if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
-                            if (subCategoria === 'EDAD') {
-
-                                return valida = 2;
-
-                            }
-                        }
-                    }
-                }
-                if (divisional === 'A') {
-                    if (categoria === 'NACIONAL' || categoria === 'NACIONAL-ELITE') {
-
-                        //'TOTS', 'PRE-MINI', 'MINI-INFANTIL', 'INFANTIL', 'CADETE', 'JUVENIL', 'JUNIOR', 'SENIOR', 'EDAD'
-                        if (categoria === 'NACIONAL') {
-                            if (subCategoria === 'TOTS' || subCategoria === 'PRE-MINI' || subCategoria === 'MINI-INFANTIL' || subCategoria === 'INFANTIL' || subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
-                                return valida = 2;
-                            }
-                        }
-                        if (categoria === 'NACIONAL-ELITE') {
-
-                            if (subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
-                                return valida = 2;
-                            }
-                        }
-                    }
-                }
-
-                if (divisional === 'D') {
-
-                    if (categoria === 'INICIACION' || categoria === 'AVANZADO') {
-
-                        if (subCategoria === 'EDAD') {
-
-                            return valida = 2;
-
-                        }
-
-                    }
-
-                }
-
-            }
-        }
-        return valida;
-    } //fin de funcion validacion
 
     valida = validacion(valida);
     console.log(`Resultado de la funcion validacion: ${valida}`);
@@ -496,6 +379,243 @@ app.post('/competicion', (req, res) => {
         });
 });
 
+//======================
+// Modificar Competicion
+//======================
+
+app.put('/competicion/:id', (req, res) => {
+
+    /*
+        especialidad
+        divisional
+        categoria
+        subCategoria
+        participante
+    */
+
+    let id = req.params.id;
+    let body = req.body;
+
+    Competicion.findById(id).exec((err, competicionDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                message: err
+            });
+        }
+
+        if (!competicionDB) {
+            return res.status(400).json({
+                ok: false,
+                message: 'la competicion no existe'
+            });
+        }
+
+        update = {
+            divisional: body.divisional,
+            categoria: body.categoria,
+            subCategoria: body.subCategoria
+        }
+
+        let divisional = competicionDB.divisional;
+        let categoria = competicionDB.categoria;
+        let subCategoria = competicionDB.subCategoria;
+        let especialidad = competicionDB.especialidad;
+
+        console.log('**********************************');
+        console.log(`Valor de especialidad ${especialidad}`);
+        console.log('**********************************');
+
+        let divisional_mod = '';
+        let categoria_mod = '';
+        let subCategoria_mod = '';
+
+        if (divisional !== update.divisional) {
+            divisional_mod = update.divisional
+        }
+
+        if (update.divisional === undefined) {
+            divisional_mod = divisional
+        };
+
+        if (categoria !== update.categoria) {
+            categoria_mod = update.categoria
+        }
+
+        if (update.categoria === undefined) {
+            categoria_mod = categoria
+        };
+
+        if (subCategoria !== update.subCategoria) {
+            subCategoria_mod = update.subCategoria
+        }
+
+        if (update.subCategoria === undefined) {
+            subCategoria_mod = subCategoria
+        };
+
+
+        console.log(divisional_mod);
+        console.log(categoria_mod);
+        console.log(subCategoria_mod);
+
+        insert = {
+            divisional: divisional_mod,
+            categoria: categoria_mod,
+            subCategoria: subCategoria_mod,
+        }
+
+        let valida = 1;
+
+        //valida = validacion(valida);
+
+        if (valida !== 0) {
+
+            Competicion.findByIdAndUpdate(id, insert, (err, competicionDB) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        err
+                    });
+                }
+
+                if (!competicionDB) {
+                    return res.status(400).json({
+                        ok: false,
+                        message: 'El participante no existe'
+                    });
+                }
+
+                Competicion.findById(id).exec((err, competicionDB) => {
+
+                    if (err) {
+                        return res.status(500).json({
+                            ok: false,
+                            err
+                        });
+                    }
+
+                    res.json({
+                        ok: true,
+                        competicion: competicionDB
+                    });
+
+                }); //Competicion.findById
+
+            }); //Competicion.findByIdAndUpdate
+
+        }
+    }); //Competicion.findById(id) Busco si la competicion existe
+});
+
+
+//==================
+// Eliminar Competicion
+//==================
+
+app.delete('/competicion/:id', (req, res) => {
+
+    let id = req.params.id;
+
+
+    Competicion.findById(id, (err, competicionDB) => {
+
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                message: err
+            });
+        }
+
+        if (!competicionDB) {
+            return res.status(400).json({
+                ok: false,
+                message: 'La competicion no existe'
+            })
+        }
+
+        let montoComp = competicionDB.precio;
+
+        console.log(`montoComp Variable que muestra el precio de la competicion a Eliminar ${montoComp}`);
+
+        let partComp = competicionDB.participante;
+
+        console.log(`partComp Variable que muestra el id del participante asociado  ${partComp}`);
+
+        Participantes.findById(partComp, (err, participanteDB) => {
+
+            let montoParticipante = participanteDB.total;
+
+            console.log(`montoParticipante Variable que muestra el monto cargado del participante  ${montoParticipante}`);
+
+            let profeParticipante = participanteDB.profesionales._id;
+
+            console.log(`profeParticipante Variable que muestra el id del profesional asociado al participante ${profeParticipante}`);
+
+
+            Profesionales.findById(profeParticipante, (err, profesionalDB) => {
+
+                let montoProfesional = profesionalDB.total;
+
+                console.log(`montoProfesional Variable que muestra el monto del profesional ${montoProfesional}`);
+
+                let torneoProfesional = profesionalDB.torneo._id;
+
+                console.log(`torneoProfesional Variable que id del torneo asociado al profesional ${torneoProfesional}`);
+
+                Torneo.findById(torneoProfesional, (err, torneoDB) => {
+
+                    let montoTorneo = torneoDB.total;
+
+                    console.log(`montoTorneo Variable que monto del torneo ${montoTorneo}`);
+
+
+                    let updateTorneo = montoTorneo - montoComp;
+                    let updateProf = montoProfesional - montoComp;
+                    let updatePart = montoParticipante - montoComp;
+
+                    console.log(`Monto del Torneo ${updateTorneo}`);
+                    console.log(`Monto del Profesional ${updateProf}`);
+                    console.log(`Monto del Participante ${updatePart}`);
+
+
+                    Participantes.findByIdAndUpdate(partComp, { total: updatePart }, (err, participanteDB) => {
+
+                        Profesionales.findByIdAndUpdate(profeParticipante, { total: updateProf }, (err, participanteDB) => {
+
+                            Torneo.findByIdAndUpdate(torneoProfesional, { total: updateTorneo }, (err, torneoDB) => {
+
+                                Competicion.remove({ "_id": id }, (err, competicionDB) => {
+                                    if (err) {
+                                        return res.status(500).json({
+                                            ok: false,
+                                            message: err
+                                        })
+                                    }
+
+                                    res.json({
+                                        ok: true,
+                                        message: 'Se borro de forma correcta la competicion'
+                                    })
+                                });
+
+                            });
+                        });
+
+                    });
+
+                });
+
+            });
+
+        });
+
+    });
+
+});
+
+
+
 function calculoEdad(dia, mes, año) {
     let edad = 0;
 
@@ -513,5 +633,122 @@ function calculoEdad(dia, mes, año) {
 
     return edad;
 };
+
+function validacion(valida) {
+    if (especialidad === 'ESCUELA') {
+        if (divisional === 'C' || divisional === 'B' || divisional === 'A') {
+
+            if (divisional === 'C') {
+                if (categoria === 'FORMATIVA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                    if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+
+                        if (subCategoria === 'EDAD') {
+
+                            return valida = 1;
+
+                        }
+
+                    }
+
+                }
+            }
+            if (divisional === 'B') {
+                if (categoria === 'PROMOCIONAL' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                    if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+                        if (subCategoria === 'EDAD') {
+
+                            return valida = 1;
+
+                        }
+                    }
+                }
+            }
+            if (divisional === 'A') {
+                if (categoria === 'NACIONAL' || categoria === 'NACIONAL-ELITE') {
+
+                    //'TOTS', 'PRE-MINI', 'MINI-INFANTIL', 'INFANTIL', 'CADETE', 'JUVENIL', 'JUNIOR', 'SENIOR', 'EDAD'
+                    if (categoria === 'NACIONAL') {
+                        if (subCategoria === 'TOTS' || subCategoria === 'PRE-MINI' || subCategoria === 'MINI-INFANTIL' || subCategoria === 'INFANTIL' || subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                            return valida = 1;
+                        }
+                    }
+                    if (categoria === 'NACIONAL-ELITE') {
+
+                        if (subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                            return valida = 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (especialidad === 'LIBRE') {
+        if (divisional === 'C' || divisional === 'B' || divisional === 'A' || divisional === 'D') {
+
+            if (divisional === 'C') {
+                if (categoria === 'FORMATIVA' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                    if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+
+                        if (subCategoria === 'EDAD') {
+
+                            return valida = 2;
+
+                        }
+
+                    }
+
+                }
+            }
+            if (divisional === 'B') {
+                if (categoria === 'PROMOCIONAL' || categoria === '5' || categoria === '4' || categoria === '3' || categoria === '2' || categoria === '1') {
+
+                    if (subCategoria !== 'TOTS' || subCategoria !== 'PRE-MINI' || subCategoria !== 'MINI-INFANTIL' || subCategoria !== 'INFANTIL' || subCategoria !== 'CADETE' || subCategoria !== 'JUVENIL' || subCategoria !== 'JUNIOR' || subCategoria !== 'SENIOR') {
+                        if (subCategoria === 'EDAD') {
+
+                            return valida = 2;
+
+                        }
+                    }
+                }
+            }
+            if (divisional === 'A') {
+                if (categoria === 'NACIONAL' || categoria === 'NACIONAL-ELITE') {
+
+                    //'TOTS', 'PRE-MINI', 'MINI-INFANTIL', 'INFANTIL', 'CADETE', 'JUVENIL', 'JUNIOR', 'SENIOR', 'EDAD'
+                    if (categoria === 'NACIONAL') {
+                        if (subCategoria === 'TOTS' || subCategoria === 'PRE-MINI' || subCategoria === 'MINI-INFANTIL' || subCategoria === 'INFANTIL' || subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                            return valida = 2;
+                        }
+                    }
+                    if (categoria === 'NACIONAL-ELITE') {
+
+                        if (subCategoria === 'CADETE' || subCategoria === 'JUVENIL' || subCategoria === 'JUNIOR' || subCategoria === 'SENIOR') {
+                            return valida = 2;
+                        }
+                    }
+                }
+            }
+
+            if (divisional === 'D') {
+
+                if (categoria === 'INICIACION' || categoria === 'AVANZADO') {
+
+                    if (subCategoria === 'EDAD') {
+
+                        return valida = 2;
+
+                    }
+
+                }
+
+            }
+
+        }
+    }
+    return valida;
+} //fin de funcion validacion
 
 module.exports = app;
