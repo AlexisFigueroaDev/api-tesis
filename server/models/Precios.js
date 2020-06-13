@@ -8,7 +8,7 @@ let especialidadesValidas = {
 
 let preciosSchema = new Schema({
 
-    descripcion: { type: String, enum: especialidadesValidas, required: [true, 'La descripcion es requerido'] },
+    descripcion: { type: String, enum: especialidadesValidas, required: [true, 'La descripcion es requerido'], unique: true },
     precio: { type: Number, required: [true, 'El precio es requerido'] },
 
 });

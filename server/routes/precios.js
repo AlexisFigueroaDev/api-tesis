@@ -96,4 +96,44 @@ app.get('/precios/:id', verificaToken, (req, res) => {
 
 });
 
+
+//==================
+// Modificar Precio
+//==================
+
+
+app.put('/precio/:id', [verificaToken, verificaAdminRol], (req, res) => {
+
+    let id = req.params.id;
+    let body = req.body;
+
+
+    let insert = {
+        precio: body.Precios
+    }
+
+    Precios.findByIdAndUpdate(id, insert, (err, precioDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!precioDB) {
+            return res.status(400).json({
+                ok: false,
+                message: 'El precio no existe'
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: 'Solo se actualiza el precio las competeniciones cargadas no son modificadas',
+            precio: precioDB
+        });
+    });
+
+});
+
 module.exports = app;
