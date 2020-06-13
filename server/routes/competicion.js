@@ -383,7 +383,7 @@ app.post('/competicion', verificaToken, (req, res) => {
 // Modificar Competicion
 //======================
 
-app.put('/competicion/:id', (req, res) => {
+app.put('/competicion/:id', verificaToken, (req, res) => {
 
     /*
         especialidad
@@ -513,7 +513,7 @@ app.put('/competicion/:id', (req, res) => {
 // Eliminar Competicion
 //==================
 
-app.delete('/competicion/:id', (req, res) => {
+app.delete('/competicion/:id', [verificaToken, verificaAdminRol], (req, res) => {
 
     let id = req.params.id;
 
